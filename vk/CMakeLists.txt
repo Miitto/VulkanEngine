@@ -29,6 +29,7 @@ target_sources(vk PUBLIC FILE_SET modules TYPE CXX_MODULES BASE_DIRS ${CMAKE_CUR
   structs/bufferCopy.ixx
   structs/mappedMemoryRange.ixx
   structs/pipelineColorBlendAttachmentState.ixx
+  structs/rect2d.ixx
   structs/subpassDependency.ixx
   structs/subpassDescription.ixx
   structs/vertexInputAttributeDescription.ixx
@@ -68,10 +69,14 @@ target_sources(vk PUBLIC FILE_SET modules TYPE CXX_MODULES BASE_DIRS ${CMAKE_CUR
   sync/fence.ixx
   sync/semaphore.ixx
 
+  util/util.ixx
+  util/log.ixx
+
   instance.ixx
   descriptors.ixx
   framebuffer.ixx
   queue.ixx
+  ref.ixx
   surface.ixx
   swapchain.ixx
   version.ixx
@@ -107,6 +112,11 @@ target_sources(vk PUBLIC FILE_SET modules TYPE CXX_MODULES BASE_DIRS ${CMAKE_CUR
   surface.cxx
   swapchain.cxx
   window.cxx
+)
+
+target_include_directories(vk PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
+  $<INSTALL_INTERFACE:include/vk>
 )
 
 include(FetchContent)

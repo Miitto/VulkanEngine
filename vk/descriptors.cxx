@@ -1,10 +1,11 @@
 module;
-#include "log.h"
 #include <optional>
 #include <span>
 #include <vector>
 #include <vulkan/vulkan_core.h>
 module vk;
+
+import util;
 
 std::optional<vk::DescriptorSetLayout>
 vk::DescriptorSetLayout::create(Device &device,
@@ -49,7 +50,7 @@ vk::DescriptorPool::allocateSets(std::span<DescriptorSetLayout::Ref> &layouts) {
   sets.resize(layouts.size());
 
   if (vkAllocateDescriptorSets(device, &allocInfo, sets.data()) != VK_SUCCESS) {
-    LOG_ERR("Failed to allocate descriptor sets.");
+    util::log_err("Failed to allocate descriptor sets.");
     return std::nullopt;
   }
 

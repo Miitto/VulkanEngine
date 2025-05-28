@@ -1,7 +1,5 @@
 module;
 
-#include "log.h"
-#include "refs/refable.h"
 #include <bit>
 #include <cstdint>
 #include <optional>
@@ -11,6 +9,8 @@ module;
 
 export module vk:descriptors;
 
+import util;
+import :ref;
 import :buffers.uniform;
 import :buffer;
 
@@ -341,7 +341,7 @@ public:
     if (descriptorType == VK_DESCRIPTOR_TYPE_MAX_ENUM) {
       descriptorType = buffer.bufferType();
     } else if (descriptorType != buffer.bufferType()) {
-      LOG_ERR("All buffers must have the same type.");
+      util::log_err("All buffers must have the same type.");
       return *this;
     }
 

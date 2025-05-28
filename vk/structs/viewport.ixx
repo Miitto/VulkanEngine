@@ -16,6 +16,8 @@ public:
                    .minDepth = 0.0f,
                    .maxDepth = 1.0f} {}
 
+  Viewport(const VkViewport &viewport) : VkViewport(viewport) {}
+
   Viewport(VkExtent2D extent) { Viewport(extent.width, extent.height); }
 
   Viewport(Swapchain &swapChain) { Viewport(swapChain.getExtent()); }

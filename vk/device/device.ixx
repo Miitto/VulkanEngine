@@ -1,12 +1,12 @@
 module;
 
-#include "refs/refable.h"
 #include <optional>
 #include <span>
 #include <vulkan/vulkan_core.h>
 
 export module vk:device;
 
+import :ref;
 import :device.physical;
 import :info.buffers.create;
 import :info.deviceCreate;

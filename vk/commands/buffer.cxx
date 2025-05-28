@@ -1,5 +1,4 @@
 module;
-#include "log.h"
 #include <cstdint>
 #include <optional>
 #include <span>
@@ -7,6 +6,7 @@ module;
 #include <vulkan/vulkan_core.h>
 
 module vk;
+import util;
 
 namespace vk {
 using Encoder = CommandBuffer::Encoder;
@@ -97,12 +97,13 @@ void Encoder::RenderPass::bindDescriptorSet(
     return;
 
   if (!m_pipeline.has_value()) {
-    LOG_ERR("No pipeline bound to render pass, cannot bind descriptor set.");
+    util::log_err(
+        "No pipeline bound to render pass, cannot bind descriptor set.");
     return;
   }
 
   if (!m_pipeline.value().has_value()) {
-    LOG_ERR("Pipeline is not valid, cannot bind descriptor set.");
+    util::log_err("Pipeline is not valid, cannot bind descriptor set.");
     return;
   }
 
@@ -122,12 +123,13 @@ void Encoder::RenderPass::bindDescriptorSets(
     return;
 
   if (!m_pipeline.has_value()) {
-    LOG_ERR("No pipeline bound to render pass, cannot bind descriptor sets.");
+    util::log_err(
+        "No pipeline bound to render pass, cannot bind descriptor sets.");
     return;
   }
 
   if (!m_pipeline.value().has_value()) {
-    LOG_ERR("Pipeline is not valid, cannot bind descriptor sets.");
+    util::log_err("Pipeline is not valid, cannot bind descriptor sets.");
     return;
   }
 

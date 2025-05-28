@@ -1,10 +1,11 @@
 module;
 
-#include "refs/refable.h"
 #include "vulkan/vulkan_core.h"
+#include <utility>
 
 export module vk:pipeline;
 
+import :ref;
 import :device;
 import :pipeline.layout;
 

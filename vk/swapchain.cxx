@@ -2,13 +2,13 @@ module;
 
 #include <optional>
 
-#include "log.h"
 #include <optional>
 #include <vector>
 #include <vulkan/vulkan_core.h>
 
 module vk;
 
+import util;
 import :info.framebufferCreate;
 import :info.imageViewCreate;
 
@@ -17,7 +17,7 @@ std::optional<Swapchain> Swapchain::create(Device &device,
                                            vk::info::SwapchainCreate info) {
   VkSwapchainKHR swapChain;
   if (vkCreateSwapchainKHR(*device, &info, nullptr, &swapChain) != VK_SUCCESS) {
-    LOG_ERR("Failed to create swap chain");
+    util::log_err("Failed to create swap chain");
     return std::nullopt;
   }
 
@@ -31,7 +31,7 @@ std::optional<Swapchain> Swapchain::create(Device &device,
     auto createInfo = vk::info::ImageViewCreate(images[i], info.imageFormat);
     if (vkCreateImageView(*device, &createInfo, nullptr, &imageViews[i]) !=
         VK_SUCCESS) {
-      LOG_ERR("Failed to create image views!");
+      util::log_err("Failed to create image views!");
       return std::nullopt;
     }
   }
@@ -49,7 +49,7 @@ Swapchain::createFramebuffers(RenderPass &renderPass) {
 
     auto framebuffer = Framebuffer::create(*device, framebufferCreateInfo);
     if (!framebuffer.has_value()) {
-      LOG_ERR("Failed to create framebuffer!");
+      util::log_err("Failed to create framebuffer!");
       return std::nullopt;
     }
     framebuffers.push_back(std::move(framebuffer.value()));

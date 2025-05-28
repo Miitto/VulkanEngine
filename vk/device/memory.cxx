@@ -1,11 +1,12 @@
 module;
 
-#include "log.h"
 #include <optional>
 #include <vector>
 #include <vulkan/vulkan_core.h>
 
 module vk;
+
+import util;
 
 namespace vk {
 Mapping::Mapping(Device &device, DeviceMemory &memory, void *ptr,
@@ -30,7 +31,7 @@ std::optional<Mapping> Mapping::map(Device &device, DeviceMemory &memory,
                                     VkMemoryMapFlags flags) {
   auto activeMapping = memory.activeMapping();
   if (activeMapping.has_value()) {
-    LOG_ERR("Memory is already mapped");
+    util::log_err("Memory is already mapped");
     return std::nullopt;
   }
 
@@ -53,19 +54,19 @@ Mapping::~Mapping() {
 std::optional<Mapping> DeviceMemory::map(VkDeviceSize size, VkDeviceSize offset,
                                          VkMemoryMapFlags flags) {
   if (!m_memory) {
-    LOG_ERR("Memory is not valid.");
+    util::log_err("Memory is not valid.");
     return std::nullopt;
   }
 
   if (!mappable()) {
-    LOG_ERR("Memory is not mappable.");
+    util::log_err("Memory is not mappable.");
     return std::nullopt;
   }
 
   // Ensure that the requested size and offset are within the bounds of the
   // buffer and the device memory
   if (m_size < (size == VK_WHOLE_SIZE ? m_size : size) + offset) {
-    LOG_ERR("Memory is smaller than requested size.");
+    util::log_err("Memory is smaller than requested size.");
     return std::nullopt;
   }
 

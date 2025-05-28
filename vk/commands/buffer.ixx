@@ -1,7 +1,5 @@
 module;
-#include "refs/refable.h"
 
-#include "log.h"
 #include "vulkan/vulkan_core.h"
 #include <assert.h>
 #include <cstdint>
@@ -10,6 +8,8 @@ module;
 
 export module vk:commands.buffer;
 
+import util;
+import :ref;
 import :buffers.vertex;
 import :buffers.index;
 import :pipeline;
@@ -104,7 +104,7 @@ public:
     writeBufferWithStaging(std::span<T> &data, Buffer &dst,
                            VkDeviceSize offset = 0) {
       if (!dst.canCopyTo()) {
-        LOG_ERR("Buffer is not a transfer destination");
+        util::log_err("Buffer is not a transfer destination");
         return std::nullopt;
       }
 
@@ -118,7 +118,7 @@ public:
           vk::info::BufferCreate(size, VK_BUFFER_USAGE_TRANSFER_SRC_BIT);
       auto stagingBuf_opt = device.createBuffer(stagingBufInfo);
       if (!stagingBuf_opt.has_value()) {
-        LOG_ERR("Failed to create staging buffer");
+        util::log_err("Failed to create staging buffer");
         return std::nullopt;
       }
       auto &stagingBuffer = stagingBuf_opt.value();
@@ -127,20 +127,20 @@ public:
           stagingBuffer, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT |
                              VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
       if (!stagingMemory_opt.has_value()) {
-        LOG_ERR("Failed to allocate staging buffer memory");
+        util::log_err("Failed to allocate staging buffer memory");
         return std::nullopt;
       }
       auto &stagingMemory = stagingMemory_opt.value();
 
       if (stagingBuffer.bind(stagingMemory) != VK_SUCCESS) {
-        LOG_ERR("Failed to bind staging buffer memory");
+        util::log_err("Failed to bind staging buffer memory");
         return std::nullopt;
       }
 
       {
         auto mapping_opt = stagingMemory.map();
         if (!mapping_opt.has_value()) {
-          LOG_ERR("Failed to map staging buffer");
+          util::log_err("Failed to map staging buffer");
           return std::nullopt;
         }
         auto &mapping = mapping_opt.value();

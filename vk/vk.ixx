@@ -4,6 +4,8 @@ module;
 
 export module vk;
 
+export import util;
+
 // Buffers
 export import :buffer;
 export import :buffers.vertex;
@@ -34,10 +36,12 @@ export import :attachmentDescription;
 export import :bufferCopy;
 export import :mappedMemoryRange;
 export import :pipelineColorBlendAttachmentState;
+export import :rect2d;
 export import :subpassDescription;
 export import :subpassDependency;
 export import :vertexInputAttributeDescription;
 export import :vertexInputBindingDescription;
+export import :viewport;
 // Info
 export import :info.buffers.create;
 export import :info.commands.bufferAllocate;

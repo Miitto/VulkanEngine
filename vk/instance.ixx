@@ -1,12 +1,12 @@
 module;
 
-#include "refs/refable.h"
 #include <optional>
 #include <utility>
 #include <vulkan/vulkan_core.h>
 
 export module vk:instance;
 
+import :ref;
 import :window;
 import :info.instanceCreate;
 

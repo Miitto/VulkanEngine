@@ -32,7 +32,8 @@ public:
 
 public:
   static std::optional<Window> create(const char *name, const uint32_t width,
-                                      const uint32_t height);
+                                      const uint32_t height,
+                                      bool resizable = true);
   bool shouldClose() { return glfwWindowShouldClose(window); }
 
   VkExtent2D getExtent();

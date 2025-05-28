@@ -10,9 +10,6 @@ module vk;
 
 vk::Window::Window(const char *name, const uint32_t width,
                    const uint32_t height) {
-  glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
-  glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
-
   this->window =
       glfwCreateWindow(static_cast<int>(width), static_cast<int>(height), name,
                        nullptr, nullptr);
@@ -20,7 +17,14 @@ vk::Window::Window(const char *name, const uint32_t width,
 
 std::optional<vk::Window> vk::Window::create(const char *name,
                                              const uint32_t width,
-                                             const uint32_t height) {
+                                             const uint32_t height,
+                                             bool resizable) {
+  if (!resizable) {
+    glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
+  } else {
+    glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
+  }
+
   Window window(name, width, height);
 
   if (window.window == nullptr) {

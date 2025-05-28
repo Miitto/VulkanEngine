@@ -1,12 +1,12 @@
 module;
 
-#include "refs/refable.h"
 #include <cstdint>
 #include <optional>
 #include <vector>
 #include <vulkan/vulkan_core.h>
 
 export module vk:swapchain;
+import :ref;
 import :device;
 import :renderPass;
 import :info.swapchainCreate;

@@ -1,11 +1,11 @@
 module;
 
-#include "log.h"
 #include <optional>
 #include <vector>
 #include <vulkan/vulkan_core.h>
 
 module vk;
+import util;
 
 namespace vk {
 std::optional<CommandPool>
@@ -26,7 +26,7 @@ std::optional<CommandBuffer> CommandPool::allocBuffer(bool secondary) const {
 
   if (vkAllocateCommandBuffers(device.raw(), &bufferInfo, &commandBuffer) !=
       VK_SUCCESS) {
-    LOG_ERR("Failed to allocate command buffer");
+    util::log_err("Failed to allocate command buffer");
     return std::nullopt;
   }
 
@@ -42,7 +42,7 @@ CommandPool::allocBuffers(uint32_t count, bool secondary) const {
 
   if (vkAllocateCommandBuffers(device.raw(), &bufferInfo,
                                rawCommandBuffers.data()) != VK_SUCCESS) {
-    LOG_ERR("Failed to allocate command buffers");
+    util::log_err("Failed to allocate command buffers");
     return std::nullopt;
   }
 
@@ -50,7 +50,7 @@ CommandPool::allocBuffers(uint32_t count, bool secondary) const {
 
   for (auto &rawCommandBuffer : rawCommandBuffers) {
     if (rawCommandBuffer == VK_NULL_HANDLE) {
-      LOG_ERR("Failed to allocate command buffer, got VK_NULL_HANDLE");
+      util::log_err("Failed to allocate command buffer, got VK_NULL_HANDLE");
       return std::nullopt;
     }
 
@@ -58,9 +58,10 @@ CommandPool::allocBuffers(uint32_t count, bool secondary) const {
   }
 
   if (commandBuffers.size() != count) {
-    LOG_ERR("Failed to allocate all command buffers, allocated {} buffers "
-            "instead of {}",
-            commandBuffers.size(), count);
+    util::log_err(
+        "Failed to allocate all command buffers, allocated {} buffers "
+        "instead of {}",
+        commandBuffers.size(), count);
     return std::nullopt;
   }
 

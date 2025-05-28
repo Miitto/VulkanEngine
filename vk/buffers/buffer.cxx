@@ -1,11 +1,11 @@
 module;
-#include "log.h"
 #include <optional>
 #include <span>
 #include <vector>
 #include <vulkan/vulkan_core.h>
 
 module vk;
+import util;
 
 namespace vk {
 std::optional<Buffer> Buffer::create(Device &device,

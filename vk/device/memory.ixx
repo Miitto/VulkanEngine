@@ -1,13 +1,14 @@
 module;
 
-#include "log.h"
-#include "refs/refable.h"
 #include "vulkan/vulkan_core.h"
 #include <optional>
 #include <span>
+#include <vector>
 
 export module vk:memory;
 
+import util;
+import :ref;
 import :types;
 import :device;
 import :mappedMemoryRange;
@@ -98,7 +99,8 @@ public:
         VkDeviceMemory memory = m_memory;
         ranges.emplace_back(memory, write.size, write.start);
       }
-      vkFlushMappedMemoryRanges(m_device, static_cast<uint32_t>(ranges.size()), ranges.data());
+      vkFlushMappedMemoryRanges(m_device, static_cast<uint32_t>(ranges.size()),
+                                ranges.data());
 
       m_writes.clear();
     }
@@ -143,11 +145,11 @@ public:
 
   bool write(void *data, uint32_t size, uint32_t offset = 0) {
     if (!m_mapping.has_value()) {
-      LOG_ERR("Mapping is not valid");
+      util::log_err("Mapping is not valid");
       return false;
     }
     if (offset + size > m_size) {
-      LOG_ERR("Write size {} exceeds segment size {}", size, m_size);
+      util::log_err("Write size {} exceeds segment size {}", size, m_size);
       return false;
     }
     auto &mapping = *m_mapping;
