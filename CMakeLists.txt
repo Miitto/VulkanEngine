@@ -1,15 +1,10 @@
 cmake_minimum_required(VERSION 3.15...4.0)
 
-project(VulkanRenderer VERSION 0.1 DESCRIPTION "Vulkan Renderer" LANGUAGES CXX)
+project(VulkanEngine VERSION 0.1 DESCRIPTION "Vulkan Engine" LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 23)
 
 add_library(${PROJECT_NAME} STATIC)
-
-target_sources(${PROJECT_NAME} PUBLIC FILE_SET modules TYPE CXX_MODULES BASE_DIRS ${CMAKE_CURRENT_SOURCE_DIR}
-    FILES
-    renderer.ixx
-)
 
 include(FetchContent)
 
@@ -27,3 +22,4 @@ target_include_directories(${PROJECT_NAME} PUBLIC
 
 add_subdirectory(vk)
 target_link_libraries(${PROJECT_NAME} PUBLIC vk)
+add_subdirectory(engine)
