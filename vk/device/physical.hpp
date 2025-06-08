@@ -38,11 +38,17 @@ public:
   [[nodiscard]] auto getName() const -> const char * { return extensionName; }
 };
 
-class PhysicalDevice : public Handle<VkPhysicalDevice>,
-                       public RawRefable<PhysicalDevice, VkPhysicalDevice> {
+class PhysicalDevice : public Handle<VkPhysicalDevice> {
 
 public:
-  PhysicalDevice(VkPhysicalDevice device) : Handle(device), RawRefable() {}
+  PhysicalDevice(VkPhysicalDevice device) : Handle(device) {}
+  PhysicalDevice(const PhysicalDevice &other) : Handle(other.m_handle) {}
+  auto operator=(const PhysicalDevice &other) -> PhysicalDevice & {
+    if (this != &other) {
+      m_handle = other.m_handle;
+    }
+    return *this;
+  }
   PhysicalDevice(PhysicalDevice &&other) noexcept = default;
 
   static auto all(Instance &instance) -> std::vector<PhysicalDevice>;
@@ -50,14 +56,16 @@ public:
   [[nodiscard]] auto getProperties() const -> PhysicalDeviceProperties;
   [[nodiscard]] auto getFeatures() const -> PhysicalDeviceFeatures;
   [[nodiscard]] auto getExtensions() const -> std::vector<ExtensionProperties>;
-  auto getQueues() -> std::vector<QueueFamily>;
+  [[nodiscard]] auto getQueues() const -> std::vector<QueueFamily>;
 
   [[nodiscard]] auto getMemoryProperties() const
       -> VkPhysicalDeviceMemoryProperties;
 
+  [[nodiscard]] auto supportsExtension(const char *const extension) const
+      -> bool;
+
   [[nodiscard]] auto
-  findUnsupportedExtensions(const std::vector<char const *> &extensions) const
-      -> std::vector<char const *>;
+  supportsExtensions(const std::vector<char const *> &extensions) const -> bool;
 
   [[nodiscard]] auto findMemoryType(uint32_t typeFilter,
                                     enums::MemoryPropertyFlags properties) const

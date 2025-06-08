@@ -14,6 +14,7 @@ class Instance;
 class Window;
 class PhysicalDevice;
 
+namespace khr {
 class Surface : public Handle<VkSurfaceKHR> {
   RawRef<Instance, VkInstance> instance;
 
@@ -39,6 +40,7 @@ public:
   std::vector<VkSurfaceFormatKHR> formats;
   std::vector<VkPresentModeKHR> presentModes;
 
-  SurfaceAttributes(PhysicalDevice &device, Surface &surface);
+  SurfaceAttributes(const PhysicalDevice &device, const Surface &surface);
 };
+} // namespace khr
 } // namespace vk

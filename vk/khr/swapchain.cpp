@@ -14,13 +14,14 @@
 namespace vk {
 
 namespace info {
-auto SwapchainCreate::setOldSwapchain(Swapchain &swapchain)
+auto SwapchainCreate::setOldSwapchain(khr::Swapchain &swapchain)
     -> SwapchainCreate & {
   oldSwapchain = swapchain;
   return *this;
 }
 } // namespace info
 
+namespace khr {
 Swapchain::Swapchain(VkSwapchainKHR swapchain, Device &device,
                      std::vector<Image> &images,
                      std::vector<ImageView> &imageViews, Extent2D extent,
@@ -105,4 +106,5 @@ auto Swapchain::getNextImage(std::optional<Semaphore *> semaphore,
       **device, m_handle, timeout, semaphoreHandle, fenceHandle, &imageIndex);
   return {.state = result, .imageIndex = imageIndex};
 }
+} // namespace khr
 } // namespace vk

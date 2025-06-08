@@ -20,6 +20,6 @@ public:
       : Viewport(static_cast<float>(extent.width),
                  static_cast<float>(extent.height)) {}
 
-  Viewport(Swapchain &swapChain) : Viewport(swapChain.getExtent()) {}
+  Viewport(khr::Swapchain &swapChain) : Viewport(swapChain.getExtent()) {}
 };
 } // namespace vk

@@ -44,7 +44,7 @@ protected:
 public:
   Refable() : m_ref(static_cast<T *>(this)) {}
 
-  auto ref() -> Reference<T> & { return m_ref; }
+  auto ref() const -> Reference<T> { return m_ref; }
 
   Refable(const Refable &) = delete;
   auto operator=(const Refable &) -> Refable & = delete;

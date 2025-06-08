@@ -10,7 +10,9 @@
 #include <vulkan/vulkan_core.h>
 
 namespace vk {
+namespace khr {
 class Surface;
+}
 
 namespace info {
 class Application : public VkApplicationInfo {
@@ -157,6 +159,6 @@ public:
   static auto create(info::InstanceCreate &createInfo)
       -> std::optional<Instance>;
 
-  auto createSurface(Window &window) -> std::optional<Surface>;
+  auto createSurface(Window &window) -> std::optional<khr::Surface>;
 };
 } // namespace vk

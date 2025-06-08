@@ -4,7 +4,6 @@
 
 namespace engine {
 auto init() -> bool {
-  // Initialize the core engine components here
   vk::Logger::init();
 
   if (!glfwInit()) {

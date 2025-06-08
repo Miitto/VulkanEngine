@@ -2,6 +2,7 @@
 
 #include "queue.hpp"
 
+#include <algorithm>
 #include <cstring>
 #include <optional>
 #include <vector>
@@ -63,7 +64,7 @@ auto PhysicalDevice::getMemoryProperties() const
   return props;
 }
 
-auto PhysicalDevice::getQueues() -> std::vector<QueueFamily> {
+auto PhysicalDevice::getQueues() const -> std::vector<QueueFamily> {
   uint32_t queueFamilyCount = 0;
   vkGetPhysicalDeviceQueueFamilyProperties(m_handle, &queueFamilyCount,
                                            nullptr);
@@ -81,26 +82,28 @@ auto PhysicalDevice::getQueues() -> std::vector<QueueFamily> {
   return queueFamilies;
 }
 
-auto PhysicalDevice::findUnsupportedExtensions(
-    const std::vector<char const *> &extensions) const
-    -> std::vector<char const *> {
-  std::vector<ExtensionProperties> availableExtensions = getExtensions();
-  std::vector<char const *> unsupportedExtensions;
-
-  for (auto requested : extensions) {
-    bool found = false;
-    for (const auto &extension : availableExtensions) {
-      if (strcmp(requested, extension.extensionName) == 0) {
-        found = true;
-        break;
-      }
-    }
-    if (!found) {
-      unsupportedExtensions.push_back(requested);
+auto PhysicalDevice::supportsExtension(const char *const extension) const
+    -> bool {
+  auto extensions = getExtensions();
+  for (const auto &ext : extensions) {
+    if (std::strcmp(ext.getName(), extension) == 0) {
+      return true;
     }
   }
+  return false;
+}
 
-  return unsupportedExtensions;
+auto PhysicalDevice::supportsExtensions(
+    const std::vector<char const *> &extensions) const -> bool {
+  auto exts = getExtensions();
+  for (const auto &ext : extensions) {
+    if (std::ranges::none_of(exts, [&ext](const ExtensionProperties &e) {
+          return std::strcmp(e.getName(), ext) == 0;
+        })) {
+      return false;
+    }
+  }
+  return true;
 }
 
 auto PhysicalDevice::findMemoryType(uint32_t typeFilter,

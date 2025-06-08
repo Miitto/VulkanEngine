@@ -76,7 +76,7 @@ auto Instance::create(info::InstanceCreate &createInfo)
   return Instance(instance);
 }
 
-auto Instance::createSurface(Window &window) -> std::optional<Surface> {
-  return Surface::create(*this, window);
+auto Instance::createSurface(Window &window) -> std::optional<khr::Surface> {
+  return khr::Surface::create(*this, window);
 }
 } // namespace vk

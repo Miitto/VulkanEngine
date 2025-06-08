@@ -1,6 +1,5 @@
 #pragma once
 
-#include "util/vk-logger.hpp"
 #include <GLFW/glfw3.h>
 
 namespace engine {

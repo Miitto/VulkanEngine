@@ -37,8 +37,8 @@ auto Device::getQueue(int32_t queueFamilyIndex, uint32_t queueIndex)
 }
 
 auto Device::createSwapchain(vk::info::SwapchainCreate &info)
-    -> std::optional<Swapchain> {
-  return Swapchain::create(*this, info);
+    -> std::optional<khr::Swapchain> {
+  return khr::Swapchain::create(*this, info);
 }
 
 auto Device::createCommandPool(vk::info::CommandPoolCreate &info)
@@ -107,7 +107,7 @@ auto Device::allocateMemory(MemoryRequirements reqs,
                             enums::MemoryPropertyFlags properties)
     -> std::optional<DeviceMemory> {
   auto memoryType =
-      m_physicalDevice->findMemoryType(reqs.memoryTypeBits, properties);
+      m_physicalDevice.findMemoryType(reqs.memoryTypeBits, properties);
 
   if (!memoryType) {
     return std::nullopt;

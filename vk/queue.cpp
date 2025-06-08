@@ -53,7 +53,7 @@ auto Queue::submit(CommandBuffer &cmdBuffer, std::optional<Fence *> fence)
   return submit(submitInfo, fence);
 }
 
-auto QueueFamily::canPresentTo(Surface &surface) -> bool {
+auto QueueFamily::canPresentTo(khr::Surface &surface) -> bool {
   VkBool32 presentSupport = false;
   vkGetPhysicalDeviceSurfaceSupportKHR(device, index, surface, &presentSupport);
   return presentSupport;

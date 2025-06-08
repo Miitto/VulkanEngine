@@ -9,7 +9,9 @@
 #include <vulkan/vulkan_core.h>
 
 namespace vk {
+namespace khr {
 class Swapchain;
+}
 class Queue;
 class CommandPool;
 class Semaphore;
@@ -195,11 +197,11 @@ public:
 
 } // namespace info
 class Device : public RawRefable<Device, VkDevice>, public Handle<VkDevice> {
-  RawRef<PhysicalDevice, VkPhysicalDevice> m_physicalDevice;
+  PhysicalDevice m_physicalDevice;
 
 public:
   Device(VkDevice device, PhysicalDevice &physicalDevice)
-      : RawRefable(), Handle(device), m_physicalDevice(physicalDevice.ref()) {}
+      : RawRefable(), Handle(device), m_physicalDevice(physicalDevice) {}
 
   void destroy() override {
     waitIdle();
@@ -220,7 +222,7 @@ public:
   auto createCommandPool(vk::info::CommandPoolCreate &info)
       -> std::optional<CommandPool>;
   auto createSwapchain(vk::info::SwapchainCreate &info)
-      -> std::optional<Swapchain>;
+      -> std::optional<khr::Swapchain>;
   auto createSemaphore() -> std::optional<Semaphore>;
   auto createFence(bool createSignaled = false) -> std::optional<Fence>;
 

@@ -24,15 +24,17 @@ class Framebuffer;
 } // namespace vk
 
 namespace vk {
+namespace khr {
 class Swapchain;
+}
 
 namespace info {
 class SwapchainCreate : public VkSwapchainCreateInfoKHR {
-  SurfaceAttributes &swapChainSupport;
+  khr::SurfaceAttributes &swapChainSupport;
 
 public:
-  SwapchainCreate(SurfaceAttributes &swapChainSupport, Surface &surface,
-                  bool share = false)
+  SwapchainCreate(khr::SurfaceAttributes &swapChainSupport,
+                  khr::Surface &surface, bool share = false)
       : VkSwapchainCreateInfoKHR{.sType =
                                      VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR,
                                  .pNext = nullptr,
@@ -131,7 +133,7 @@ public:
     return *this;
   }
 
-  auto setOldSwapchain(Swapchain &swapchain) -> SwapchainCreate &;
+  auto setOldSwapchain(khr::Swapchain &swapchain) -> SwapchainCreate &;
 
   auto setImageSharingMode(enums::SharingMode sharingMode)
       -> SwapchainCreate & {
@@ -148,6 +150,7 @@ public:
 };
 
 } // namespace info
+namespace khr {
 class Swapchain : public Handle<VkSwapchainKHR> {
   RawRef<Device, VkDevice> device;
   std::vector<Image> images;
@@ -185,4 +188,5 @@ public:
                     std::optional<Fence *> fence = std::nullopt,
                     uint64_t timeout = UINT64_MAX) -> SwapchainImageState;
 };
+} // namespace khr
 } // namespace vk

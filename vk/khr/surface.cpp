@@ -8,7 +8,7 @@
 #include <vector>
 #include <vulkan/vulkan_core.h>
 
-namespace vk {
+namespace vk::khr {
 Surface::Surface(Instance &instance, VkSurfaceKHR surface)
     : Handle<VkSurfaceKHR>(surface), instance(instance.ref()) {}
 
@@ -22,8 +22,9 @@ auto Surface::create(Instance &instance, Window &window)
   return Surface(instance, surface);
 }
 
-SurfaceAttributes::SurfaceAttributes(PhysicalDevice &physicalDevice,
-                                     Surface &surface) {
+SurfaceAttributes::SurfaceAttributes(const PhysicalDevice &physicalDevice,
+                                     const Surface &surface) {
+
   vkGetPhysicalDeviceSurfaceCapabilitiesKHR(*physicalDevice, *surface,
                                             &capabilities);
 
@@ -46,4 +47,4 @@ SurfaceAttributes::SurfaceAttributes(PhysicalDevice &physicalDevice,
         *physicalDevice, *surface, &presentModeCount, presentModes.data());
   }
 }
-} // namespace vk
+} // namespace vk::khr

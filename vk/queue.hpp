@@ -213,15 +213,15 @@ public:
 };
 
 class QueueFamily {
-  RawRef<PhysicalDevice, VkPhysicalDevice> device;
+  PhysicalDevice device;
   VkQueueFamilyProperties family;
   int index;
 
 public:
-  QueueFamily(PhysicalDevice &device, VkQueueFamilyProperties family, int index)
-      : device(device.ref()), family(family), index(index) {}
+  QueueFamily(PhysicalDevice device, VkQueueFamilyProperties family, int index)
+      : device(std::move(device)), family(family), index(index) {}
 
-  auto canPresentTo(Surface &surface) -> bool;
+  auto canPresentTo(khr::Surface &surface) -> bool;
 
   auto hasGraphics() -> bool {
     return family.queueFlags & VK_QUEUE_GRAPHICS_BIT;

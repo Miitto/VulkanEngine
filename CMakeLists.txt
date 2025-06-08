@@ -23,3 +23,4 @@ target_include_directories(${PROJECT_NAME} PUBLIC
 add_subdirectory(vk)
 target_link_libraries(${PROJECT_NAME} PUBLIC vk)
 add_subdirectory(engine)
+add_subdirectory(include)
