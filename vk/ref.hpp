@@ -84,8 +84,6 @@ public:
     m_ref.set(static_cast<T *>(this));
   }
 
-  operator bool() const { return m_ref.is(static_cast<const T *>(this)); }
-
   auto operator=(RawRefable &&o) noexcept -> RawRefable & {
     if (this != &o) {
       m_ref = std::move(o.m_ref);

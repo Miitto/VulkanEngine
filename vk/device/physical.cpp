@@ -64,7 +64,7 @@ auto PhysicalDevice::getMemoryProperties() const
   return props;
 }
 
-auto PhysicalDevice::getQueues() const -> std::vector<QueueFamily> {
+auto PhysicalDevice::getQueues() const -> QueueFamilies {
   uint32_t queueFamilyCount = 0;
   vkGetPhysicalDeviceQueueFamilyProperties(m_handle, &queueFamilyCount,
                                            nullptr);
@@ -79,7 +79,7 @@ auto PhysicalDevice::getQueues() const -> std::vector<QueueFamily> {
     queueFamilies.emplace_back(*this, families[i], static_cast<uint32_t>(i));
   }
 
-  return queueFamilies;
+  return {*this, queueFamilies};
 }
 
 auto PhysicalDevice::supportsExtension(const char *const extension) const

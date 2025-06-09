@@ -5,6 +5,7 @@
 #include "handle.hpp"
 #include "image-view.hpp"
 #include "image.hpp"
+#include "queue.hpp"
 #include "ref.hpp"
 #include "structs/extent2d.hpp"
 #include "surface.hpp"
@@ -31,6 +32,7 @@ class Swapchain;
 namespace info {
 class SwapchainCreate : public VkSwapchainCreateInfoKHR {
   khr::SurfaceAttributes &swapChainSupport;
+  std::vector<uint32_t> m_queueFamilyIndices;
 
 public:
   SwapchainCreate(khr::SurfaceAttributes &swapChainSupport,
@@ -141,10 +143,37 @@ public:
     return *this;
   }
 
-  auto setQueueFamilyIndices(const std::vector<uint32_t> &indices)
+  template <typename... Args>
+  auto setQueueFamilyIndices(Args &&...args) -> SwapchainCreate &
+    requires(std::conjunction_v<std::is_same<QueueFamily, Args>...> ||
+             std::conjunction_v<std::is_same<QueueFamily &, Args>...>)
+  {
+    return setQueueFamilyIndices(args.getIndex()...);
+  }
+
+  template <typename... Args>
+  auto setQueueFamilyIndices(Args &&...args) -> SwapchainCreate &
+    requires(std::conjunction_v<std::is_same<uint32_t, Args>...>)
+  {
+    m_queueFamilyIndices.clear();
+
+    for (auto &index : {args...}) {
+      if (std::find(m_queueFamilyIndices.begin(), m_queueFamilyIndices.end(),
+                    index) == m_queueFamilyIndices.end()) {
+        m_queueFamilyIndices.push_back(index);
+      }
+    }
+
+    queueFamilyIndexCount = static_cast<uint32_t>(m_queueFamilyIndices.size());
+    pQueueFamilyIndices = m_queueFamilyIndices.data();
+    return *this;
+  }
+
+  auto setQueueFamilyIndices(std::vector<uint32_t> &indices)
       -> SwapchainCreate & {
     queueFamilyIndexCount = static_cast<uint32_t>(indices.size());
-    pQueueFamilyIndices = indices.data();
+    m_queueFamilyIndices = std::move(indices);
+    pQueueFamilyIndices = m_queueFamilyIndices.data();
     return *this;
   }
 };

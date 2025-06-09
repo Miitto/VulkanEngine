@@ -8,7 +8,7 @@
 #include <vulkan/vulkan.h>
 
 namespace vk {
-class QueueFamily;
+class QueueFamilies;
 
 struct DeviceMemoryProperties {
   uint32_t index;
@@ -56,7 +56,7 @@ public:
   [[nodiscard]] auto getProperties() const -> PhysicalDeviceProperties;
   [[nodiscard]] auto getFeatures() const -> PhysicalDeviceFeatures;
   [[nodiscard]] auto getExtensions() const -> std::vector<ExtensionProperties>;
-  [[nodiscard]] auto getQueues() const -> std::vector<QueueFamily>;
+  [[nodiscard]] auto getQueues() const -> QueueFamilies;
 
   [[nodiscard]] auto getMemoryProperties() const
       -> VkPhysicalDeviceMemoryProperties;

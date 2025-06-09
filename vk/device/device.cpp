@@ -26,6 +26,11 @@ auto Device::create(PhysicalDevice &physicalDevice,
   return Device(device, physicalDevice);
 }
 
+auto Device::getQueue(QueueFamily &family, uint32_t queueIndex)
+    -> std::optional<Queue> {
+  return getQueue(family.getIndex(), queueIndex);
+}
+
 auto Device::getQueue(int32_t queueFamilyIndex, uint32_t queueIndex)
     -> std::optional<Queue> {
   VkQueue queue;

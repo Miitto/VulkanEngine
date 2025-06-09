@@ -53,9 +53,49 @@ auto Queue::submit(CommandBuffer &cmdBuffer, std::optional<Fence *> fence)
   return submit(submitInfo, fence);
 }
 
-auto QueueFamily::canPresentTo(khr::Surface &surface) -> bool {
+auto QueueFamily::canPresentTo(khr::Surface &surface) const -> bool {
   VkBool32 presentSupport = false;
   vkGetPhysicalDeviceSurfaceSupportKHR(device, index, surface, &presentSupport);
   return presentSupport;
+}
+
+auto QueueFamilies::getGraphics() -> std::optional<QueueFamily> {
+  auto queue = std::ranges::find_if(m_families, [](const QueueFamily &family) {
+    return family.hasGraphics();
+  });
+
+  if (queue != m_families.end()) {
+    return std::make_optional(*queue);
+  }
+
+  return std::nullopt;
+}
+
+auto QueueFamilies::getPresent(khr::Surface &surface)
+    -> std::optional<QueueFamily> {
+  auto queue =
+      std::ranges::find_if(m_families, [&surface](const QueueFamily &family) {
+        return family.canPresentTo(surface);
+      });
+
+  if (queue != m_families.end()) {
+    return std::make_optional(*queue);
+  }
+
+  return std::nullopt;
+}
+
+auto QueueFamilies::getGraphicsPresent(khr::Surface &surface)
+    -> std::optional<QueueFamily> {
+  auto queue =
+      std::ranges::find_if(m_families, [&surface](const QueueFamily &family) {
+        return family.hasGraphics() && family.canPresentTo(surface);
+      });
+
+  if (queue != m_families.end()) {
+    return std::make_optional(*queue);
+  }
+
+  return std::nullopt;
 }
 } // namespace vk

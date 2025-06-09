@@ -3,6 +3,7 @@
 #include "buffers.hpp"
 #include "device/physical.hpp"
 
+#include "queue.hpp"
 #include "ref.hpp"
 #include <optional>
 #include <span>
@@ -44,6 +45,8 @@ class DeviceQueueCreate : public VkDeviceQueueCreateInfo {
   }
 
 public:
+  DeviceQueueCreate(QueueFamily &family, float priority = 1.0f)
+      : DeviceQueueCreate(family.getIndex(), priority) {}
   DeviceQueueCreate(uint32_t queueIndex, float priority = 1.0f)
       : DeviceQueueCreate(queueIndex, std::vector<float>{priority}) {}
 
@@ -214,6 +217,8 @@ public:
 
   auto getPhysical() -> PhysicalDevice & { return m_physicalDevice; }
 
+  auto getQueue(QueueFamily &family, uint32_t queueIndex)
+      -> std::optional<Queue>;
   auto getQueue(int32_t queueFamilyIndex, uint32_t queueIndex)
       -> std::optional<Queue>;
 

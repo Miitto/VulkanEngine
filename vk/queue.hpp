@@ -2,6 +2,7 @@
 
 #include "device/physical.hpp"
 
+#include <algorithm>
 #include <bit>
 #include <cstdint>
 #include <span>
@@ -212,22 +213,6 @@ public:
   [[nodiscard]] auto getFamilyIndex() const -> uint32_t { return familyIndex; }
 };
 
-class QueueFamily {
-  PhysicalDevice device;
-  VkQueueFamilyProperties family;
-  int index;
-
-public:
-  QueueFamily(PhysicalDevice device, VkQueueFamilyProperties family, int index)
-      : device(std::move(device)), family(family), index(index) {}
-
-  auto canPresentTo(khr::Surface &surface) -> bool;
-
-  auto hasGraphics() -> bool {
-    return family.queueFlags & VK_QUEUE_GRAPHICS_BIT;
-  }
-};
-
 class PresentQueue : Queue {
 public:
   PresentQueue(VkQueue queue, int familyIndex) : Queue(queue, familyIndex) {}
@@ -235,5 +220,68 @@ public:
   auto present(vk::info::Present &presentInfo) -> VkResult {
     return vkQueuePresentKHR(m_handle, &presentInfo);
   }
+};
+
+class QueueFamily {
+  PhysicalDevice device;
+  VkQueueFamilyProperties family;
+  uint32_t index;
+
+public:
+  QueueFamily(PhysicalDevice device, VkQueueFamilyProperties family, int index)
+      : device(std::move(device)), family(family), index(index) {}
+
+  auto canPresentTo(khr::Surface &surface) const -> bool;
+
+  [[nodiscard]] auto getIndex() const -> uint32_t { return index; }
+
+  [[nodiscard]] auto getFamily() const -> const VkQueueFamilyProperties & {
+    return family;
+  }
+
+  [[nodiscard]] auto getDevice() const -> PhysicalDevice { return device; }
+
+  [[nodiscard]] auto getQueueCount() const -> uint32_t {
+    return family.queueCount;
+  }
+
+  [[nodiscard]] auto getQueueFlags() const -> VkQueueFlags {
+    return family.queueFlags;
+  }
+
+  [[nodiscard]] auto isCompute() const -> bool {
+    return family.queueFlags & VK_QUEUE_COMPUTE_BIT;
+  }
+
+  [[nodiscard]] auto hasGraphics() const -> bool {
+    return family.queueFlags & VK_QUEUE_GRAPHICS_BIT;
+  }
+};
+
+class QueueFamilies {
+  PhysicalDevice m_device;
+  std::vector<QueueFamily> m_families;
+
+public:
+  QueueFamilies(PhysicalDevice device, std::vector<QueueFamily> &queues)
+      : m_device(std::move(device)), m_families(std::move(queues)) {}
+
+  [[nodiscard]] auto size() const -> size_t { return m_families.size(); }
+
+  [[nodiscard]] auto operator[](size_t index) const -> const QueueFamily & {
+    return m_families[index];
+  }
+
+  [[nodiscard]] auto begin() const -> decltype(m_families.begin()) {
+    return m_families.begin();
+  }
+
+  [[nodiscard]] auto end() const -> decltype(m_families.end()) {
+    return m_families.end();
+  }
+
+  auto getGraphics() -> std::optional<QueueFamily>;
+  auto getPresent(khr::Surface &surface) -> std::optional<QueueFamily>;
+  auto getGraphicsPresent(khr::Surface &surface) -> std::optional<QueueFamily>;
 };
 } // namespace vk

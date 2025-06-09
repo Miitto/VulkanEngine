@@ -1,6 +1,7 @@
 #pragma once
 
 #include "handle.hpp"
+#include "queue.hpp"
 #include "ref.hpp"
 
 #include "vulkan/vulkan_core.h"
@@ -18,6 +19,9 @@ class CommandBufferAllocate;
 class CommandPoolCreate : public VkCommandPoolCreateInfo {
 
 public:
+  CommandPoolCreate(QueueFamily &queueFamily, bool resetable = false,
+                    bool transient = false)
+      : CommandPoolCreate(queueFamily.getIndex(), resetable, transient) {}
   CommandPoolCreate(uint32_t queueFamily, bool resetable = false,
                     bool transient = false)
       : VkCommandPoolCreateInfo{.sType =
