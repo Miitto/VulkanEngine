@@ -1,5 +1,7 @@
 #include "buffers.hpp"
 
+#include "util/vk-logger.hpp"
+
 #include "device/device.hpp"
 #include "device/memory.hpp"
 
@@ -22,22 +24,41 @@ auto Buffer::create(Device &device, vk::info::BufferCreate &createInfo)
 
 auto Buffer::destroy() -> void { vkDestroyBuffer(m_device, m_handle, nullptr); }
 
-auto Buffer::bind(DeviceMemory &memory, VkDeviceSize offset) -> VkResult {
+auto Buffer::bind(DeviceMemory &memory, VkDeviceSize offset)
+    -> std::optional<BindError> {
+#ifndef NDEBUG
+  auto memoryRequirements = getMemoryRequirements();
+  if (memoryRequirements.size < m_size) {
+    Logger::error("Buffer size {} is larger than memory size {}", m_size,
+                  memoryRequirements.size);
+    return BindError::MemoryTooSmall;
+  }
+
+  if (offset % memoryRequirements.alignment != 0) {
+    Logger::error("Offset {} is not a multiple of alignment {}", offset,
+                  memoryRequirements.alignment);
+    return BindError::AlignmentMismatch;
+  }
+#endif
+
   auto res = vkBindBufferMemory(m_device, m_handle, memory, offset);
 
   if (res != VK_SUCCESS) {
-    return res;
+    return std::bit_cast<BindError>(res);
   }
 
   m_memory = {.memory = memory.ref(), .offset = offset};
 
-  return res;
+  return std::nullopt;
 }
 
 auto Buffer::getMemoryRequirements() -> MemoryRequirements {
-  VkMemoryRequirements memoryRequirements;
-  vkGetBufferMemoryRequirements(**m_device, m_handle, &memoryRequirements);
-  return memoryRequirements;
+  if (!m_memoryRequirements.has_value()) {
+    VkMemoryRequirements memoryRequirements;
+    vkGetBufferMemoryRequirements(**m_device, m_handle, &memoryRequirements);
+    m_memoryRequirements = memoryRequirements;
+  }
+  return m_memoryRequirements.value();
 }
 
 auto Buffer::isBound() const -> bool {

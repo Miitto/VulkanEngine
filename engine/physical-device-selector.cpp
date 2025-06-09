@@ -42,9 +42,7 @@ auto PhysicalDeviceSelector::rateDevices(
 
   for (auto &device : m_devices) {
     uint32_t rating = predicate(device);
-    if (rating > 0) {
-      ratings.push_back({.device = device, .rating = rating});
-    }
+    ratings.push_back({.device = device, .rating = rating});
   }
 
   std::ranges::sort(ratings, [](const DeviceRating &a, const DeviceRating &b) {

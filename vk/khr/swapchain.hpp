@@ -181,29 +181,31 @@ public:
 } // namespace info
 namespace khr {
 class Swapchain : public Handle<VkSwapchainKHR> {
-  RawRef<Device, VkDevice> device;
-  std::vector<Image> images;
-  std::vector<ImageView> imageViews;
-  Extent2D extent;
-  enums::Format format;
+  RawRef<Device, VkDevice> m_device;
+  std::vector<Image> m_images;
+  std::vector<ImageView> m_imageViews;
+  std::vector<Semaphore> m_imageSemaphores;
+  Extent2D m_extent;
+  enums::Format m_format;
 
 public:
   Swapchain(VkSwapchainKHR swapchain, Device &device,
             std::vector<Image> &images, std::vector<ImageView> &imageViews,
-            Extent2D extent, enums::Format format);
+            std::vector<Semaphore> &inUseSemaphores, Extent2D extent,
+            enums::Format format);
 
   auto destroy() -> void override;
 
   Swapchain(Swapchain &&o) noexcept = default;
 
-  auto getImages() -> std::vector<Image> & { return images; }
-  auto getImageViews() -> std::vector<ImageView> & { return imageViews; }
+  auto getImages() -> std::vector<Image> & { return m_images; }
+  auto getImageViews() -> std::vector<ImageView> & { return m_imageViews; }
 
 public:
   static auto create(Device &device, vk::info::SwapchainCreate info)
       -> std::optional<Swapchain>;
-  auto getExtent() -> Extent2D & { return extent; }
-  auto getFormat() -> enums::Format & { return format; }
+  auto getExtent() -> Extent2D & { return m_extent; }
+  auto getFormat() -> enums::Format & { return m_format; }
 
   auto createFramebuffers(RenderPass &renderPass)
       -> std::optional<std::vector<Framebuffer>>;
@@ -211,6 +213,7 @@ public:
   struct SwapchainImageState {
     VkResult state;
     uint32_t imageIndex;
+    Semaphore &semaphore;
   };
 
   auto getNextImage(std::optional<Semaphore *> semaphore = std::nullopt,

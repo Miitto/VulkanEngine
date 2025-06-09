@@ -24,17 +24,20 @@ auto SwapchainCreate::setOldSwapchain(khr::Swapchain &swapchain)
 namespace khr {
 Swapchain::Swapchain(VkSwapchainKHR swapchain, Device &device,
                      std::vector<Image> &images,
-                     std::vector<ImageView> &imageViews, Extent2D extent,
+                     std::vector<ImageView> &imageViews,
+                     std::vector<Semaphore> &semaphores, Extent2D extent,
                      enums::Format format)
-    : Handle(swapchain), device(device.ref()), images(std::move(images)),
-      imageViews(std::move(imageViews)), extent(extent), format(format) {}
+    : Handle(swapchain), m_device(device.ref()), m_images(std::move(images)),
+      m_imageViews(std::move(imageViews)),
+      m_imageSemaphores(std::move(semaphores)), m_extent(extent),
+      m_format(format) {}
 
 auto Swapchain::destroy() -> void {
   if (m_handle != VK_NULL_HANDLE) {
-    for (auto &imageView : imageViews) {
-      vkDestroyImageView(**device, imageView, nullptr);
+    for (auto &imageView : m_imageViews) {
+      vkDestroyImageView(**m_device, imageView, nullptr);
     }
-    vkDestroySwapchainKHR(**device, m_handle, nullptr);
+    vkDestroySwapchainKHR(**m_device, m_handle, nullptr);
   }
 }
 
@@ -71,18 +74,33 @@ auto Swapchain::create(Device &device, info::SwapchainCreate info)
     }
     imageViews.push_back(std::move(imageView.value()));
   }
-  return Swapchain(swapChain, device, images, imageViews, info.imageExtent,
-                   info.imageFormat);
+
+  std::vector<Semaphore> semaphores;
+  semaphores.reserve(imageCount);
+  for (size_t i = 0; i < imageCount; ++i) {
+    info::SemaphoreCreate semaphoreCreateInfo;
+    auto semaphore = Semaphore::create(device, semaphoreCreateInfo);
+    if (!semaphore.has_value()) {
+      Logger::error("Failed to create semaphore for swap chain image!");
+      vkDestroySwapchainKHR(*device, swapChain, nullptr);
+      return std::nullopt;
+    }
+    semaphores.push_back(std::move(semaphore.value()));
+  }
+
+  return Swapchain(swapChain, device, images, imageViews, semaphores,
+                   info.imageExtent, info.imageFormat);
 }
 
 auto Swapchain::createFramebuffers(RenderPass &renderPass)
     -> std::optional<std::vector<Framebuffer>> {
   std::vector<Framebuffer> framebuffers;
-  for (auto &imageView : imageViews) {
-    info::FramebufferCreate builder(renderPass, extent.width, extent.height);
+  for (auto &imageView : m_imageViews) {
+    info::FramebufferCreate builder(renderPass, m_extent.width,
+                                    m_extent.height);
     auto framebufferCreateInfo = builder.addAttachment(imageView);
 
-    auto framebuffer = Framebuffer::create(*device, framebufferCreateInfo);
+    auto framebuffer = Framebuffer::create(*m_device, framebufferCreateInfo);
     if (!framebuffer.has_value()) {
       Logger::error("Failed to create framebuffer!");
       return std::nullopt;
@@ -103,8 +121,11 @@ auto Swapchain::getNextImage(std::optional<Semaphore *> semaphore,
       semaphore.has_value() ? **semaphore : VK_NULL_HANDLE;
 
   VkResult result = vkAcquireNextImageKHR(
-      **device, m_handle, timeout, semaphoreHandle, fenceHandle, &imageIndex);
-  return {.state = result, .imageIndex = imageIndex};
+      m_device, m_handle, timeout, semaphoreHandle, fenceHandle, &imageIndex);
+
+  auto &sem = m_imageSemaphores[imageIndex];
+
+  return {.state = result, .imageIndex = imageIndex, .semaphore = sem};
 }
 } // namespace khr
 } // namespace vk

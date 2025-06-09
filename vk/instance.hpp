@@ -49,23 +49,7 @@ class InstanceCreate : public VkInstanceCreateInfo {
     ppEnabledExtensionNames = extensions.data();
   }
 
-  void setupLayers() {
-    auto check = checkLayers();
-
-    while (check.has_value()) {
-      for (size_t i = 0; i < layers.size(); i++) {
-        if (strcmp(layers[i], *check) == 0) {
-          layers.erase(layers.begin() + static_cast<long long>(i));
-          break;
-        }
-      }
-
-      check = checkLayers();
-    }
-
-    enabledLayerCount = static_cast<uint32_t>(layers.size());
-    ppEnabledLayerNames = layers.data();
-  }
+  void setupLayers();
 
 public:
   enum class ValidationType : uint8_t { NONE, DEBUG, ALWAYS };

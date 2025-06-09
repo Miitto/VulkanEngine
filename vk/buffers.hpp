@@ -114,6 +114,8 @@ protected:
   Size m_size;
   VkBufferUsageFlags m_usage;
 
+  std::optional<MemoryRequirements> m_memoryRequirements;
+
   struct MemoryLocation {
     RawRef<DeviceMemory, VkDeviceMemory> memory;
     VkDeviceSize offset;
@@ -137,7 +139,15 @@ public:
 
   auto getMemoryRequirements() -> MemoryRequirements;
 
-  auto bind(DeviceMemory &memory, VkDeviceSize offset = 0) -> VkResult;
+  enum class BindError {
+    OutOfHostMemory = VK_ERROR_OUT_OF_HOST_MEMORY,
+    OutOfDeviceMemory = VK_ERROR_OUT_OF_DEVICE_MEMORY,
+    InvalidOpaqueCaptureAddress = VK_ERROR_INVALID_OPAQUE_CAPTURE_ADDRESS_KHR,
+    MemoryTooSmall,
+    AlignmentMismatch,
+  };
+  auto bind(DeviceMemory &memory, VkDeviceSize offset = 0)
+      -> std::optional<BindError>;
 
   [[nodiscard]] auto isBound() const -> bool;
 
@@ -189,3 +199,26 @@ public:
 };
 
 } // namespace vk
+
+template <>
+struct fmt::formatter<vk::Buffer::BindError> : fmt::formatter<const char *> {
+  auto format(vk::Buffer::BindError my, format_context &ctx) const
+      -> decltype(ctx.out()) {
+    switch (my) {
+    case vk::Buffer::BindError::OutOfHostMemory:
+      return fmt::format_to(ctx.out(),
+                            "vk::Buffer::BindError::OutOfHostMemory");
+    case vk::Buffer::BindError::OutOfDeviceMemory:
+      return fmt::format_to(ctx.out(),
+                            "vk::Buffer::BindError::OutOfDeviceMemory");
+    case vk::Buffer::BindError::InvalidOpaqueCaptureAddress:
+      return fmt::format_to(
+          ctx.out(), "vk::Buffer::BindError::InvalidOpaqueCaptureAddress");
+    case vk::Buffer::BindError::MemoryTooSmall:
+      return fmt::format_to(ctx.out(), "vk::Buffer::BindError::MemoryTooSmall");
+    case vk::Buffer::BindError::AlignmentMismatch:
+      return fmt::format_to(ctx.out(),
+                            "vk::Buffer::BindError::AlignmentMismatch");
+    }
+  }
+};

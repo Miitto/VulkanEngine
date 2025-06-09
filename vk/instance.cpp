@@ -12,6 +12,23 @@
 namespace vk {
 
 namespace info {
+auto InstanceCreate::setupLayers() -> void {
+  auto check = checkLayers();
+
+  while (check.has_value()) {
+    for (size_t i = 0; i < layers.size(); i++) {
+      if (strcmp(layers[i], *check) == 0) {
+        layers.erase(layers.begin() + static_cast<long long>(i));
+        break;
+      }
+    }
+
+    check = checkLayers();
+  }
+
+  enabledLayerCount = static_cast<uint32_t>(layers.size());
+  ppEnabledLayerNames = layers.data();
+}
 auto InstanceCreate::checkValidationLayerSupport()
     -> std::optional<const char *> {
   uint32_t layerCount;

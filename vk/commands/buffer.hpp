@@ -209,8 +209,10 @@ public:
       }
       auto &stagingMemory = stagingMemory_opt.value();
 
-      if (stagingBuffer.bind(stagingMemory) != VK_SUCCESS) {
-        Logger::error("Failed to bind staging buffer memory");
+      auto stagingBufBindRes = stagingBuffer.bind(stagingMemory);
+      if (stagingBufBindRes.has_value()) {
+        Logger::error("Failed to bind staging buffer memory: {}",
+                      stagingBufBindRes.value());
         return std::nullopt;
       }
 
