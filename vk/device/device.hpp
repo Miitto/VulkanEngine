@@ -234,7 +234,8 @@ public:
   auto createBuffer(vk::info::BufferCreate &info) -> std::optional<Buffer>;
   auto createVertexBuffer(vk::info::VertexBufferCreate &info)
       -> std::optional<VertexBuffer>;
-  auto createIndexBuffer(vk::info::IndexBufferCreate &info)
+  auto createIndexBuffer(vk::info::IndexBufferCreate &info,
+                         enums::IndexType indexType)
       -> std::optional<IndexBuffer>;
   auto createUniformBuffer(vk::info::UniformBufferCreate &info)
       -> std::optional<UniformBuffer>;

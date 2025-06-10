@@ -140,9 +140,7 @@ public:
                              const std::span<VertexBuffer> &buffers,
                              const std::span<VkDeviceSize> &offsets);
 
-      void bindIndexBuffer(
-          IndexBuffer &buffer, VkDeviceSize offset = 0,
-          VkIndexType indexType = VkIndexType::VK_INDEX_TYPE_UINT32);
+      void bindIndexBuffer(IndexBuffer &buffer, VkDeviceSize offset = 0);
 
       void bindDescriptorSet(const DescriptorSet &set,
                              const std::span<uint32_t> dynamicOffsets = {});
@@ -184,6 +182,11 @@ public:
         Logger::error("Buffer is not a transfer destination");
         return std::nullopt;
       }
+
+      Logger::debug(
+          "Writing {}x{} bytes({}) at offset {} to a {} via staging buffer",
+          data.size(), sizeof(T), data.size() * sizeof(T), offset,
+          dst.bufferTypeName());
 
       VkDeviceSize size = data.size() * sizeof(T);
       assert(size > 0);
@@ -238,6 +241,8 @@ public:
 
       std::optional<CommandBuffer::Encoder::TemporaryStaging> stagingOpt =
           std::make_optional(std::move(staging));
+
+      Logger::trace("Temporary staging buffer write end");
 
       return stagingOpt;
     }

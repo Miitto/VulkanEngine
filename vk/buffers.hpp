@@ -1,10 +1,12 @@
 #pragma once
 
 #include "handle.hpp"
+#include "offset.hpp"
 #include "ref.hpp"
 #include "size.hpp"
 
 #include "enums/buffer-usage-flags.hpp"
+#include "enums/index-type.hpp"
 #include "enums/sharing-mode.hpp"
 
 #include <optional>
@@ -137,6 +139,10 @@ public:
 
   auto getDevice() -> RawRef<Device, VkDevice> & { return m_device; }
 
+  [[nodiscard]] constexpr virtual auto bufferTypeName() const -> const char * {
+    return "Buffer";
+  }
+
   auto getMemoryRequirements() -> MemoryRequirements;
 
   enum class BindError {
@@ -146,8 +152,8 @@ public:
     MemoryTooSmall,
     AlignmentMismatch,
   };
-  auto bind(DeviceMemory &memory, VkDeviceSize offset = 0)
-      -> std::optional<BindError>;
+  auto bind(DeviceMemory &memory, vk::Offset offset = Offset(0),
+            bool align = false) -> std::optional<BindError>;
 
   [[nodiscard]] auto isBound() const -> bool;
 
@@ -163,15 +169,25 @@ public:
 };
 
 class IndexBuffer : public Buffer {
+  enums::IndexType m_indexType;
+
   IndexBuffer(VkBuffer buffer, Device &device, Size size,
-              VkBufferUsageFlags usage) noexcept
-      : Buffer(buffer, device, size, usage) {}
+              VkBufferUsageFlags usage, enums::IndexType indexType) noexcept
+      : Buffer(buffer, device, size, usage), m_indexType(indexType) {}
 
 public:
-  IndexBuffer(IndexBuffer &&o) noexcept : Buffer(std::move(o)) {}
+  IndexBuffer(IndexBuffer &&o) noexcept
+      : Buffer(std::move(o)), m_indexType(o.m_indexType) {}
 
-  static auto create(Device &device, vk::info::IndexBufferCreate &createInfo)
-      -> std::optional<IndexBuffer>;
+  static auto create(Device &device, info::IndexBufferCreate &createInfo,
+                     enums::IndexType indexType) -> std::optional<IndexBuffer>;
+  [[nodiscard]] constexpr auto bufferTypeName() const -> const char * override {
+    return "IndexBuffer";
+  }
+
+  [[nodiscard]] auto indexType() const -> enums::IndexType {
+    return m_indexType;
+  };
 };
 
 class UniformBuffer : public Buffer {
@@ -184,6 +200,10 @@ public:
 
   static auto create(Device &device, vk::info::UniformBufferCreate &createInfo)
       -> std::optional<UniformBuffer>;
+
+  [[nodiscard]] constexpr auto bufferTypeName() const -> const char * override {
+    return "UniformBuffer";
+  }
 };
 
 class VertexBuffer : public Buffer {
@@ -196,6 +216,10 @@ public:
 
   static auto create(Device &device, vk::info::VertexBufferCreate &createInfo)
       -> std::optional<VertexBuffer>;
+
+  [[nodiscard]] constexpr auto bufferTypeName() const -> const char * override {
+    return "VertexBuffer";
+  }
 };
 
 } // namespace vk

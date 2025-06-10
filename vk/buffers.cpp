@@ -4,6 +4,7 @@
 
 #include "device/device.hpp"
 #include "device/memory.hpp"
+#include "enums/index-type.hpp"
 
 namespace vk {
 
@@ -24,8 +25,11 @@ auto Buffer::create(Device &device, vk::info::BufferCreate &createInfo)
 
 auto Buffer::destroy() -> void { vkDestroyBuffer(m_device, m_handle, nullptr); }
 
-auto Buffer::bind(DeviceMemory &memory, VkDeviceSize offset)
+auto Buffer::bind(DeviceMemory &memory, vk::Offset offset, bool align)
     -> std::optional<BindError> {
+  if (align) {
+    offset.alignTo(getMemoryRequirements().alignment);
+  }
 #ifndef NDEBUG
   auto memoryRequirements = getMemoryRequirements();
   if (memoryRequirements.size < m_size) {
@@ -35,11 +39,14 @@ auto Buffer::bind(DeviceMemory &memory, VkDeviceSize offset)
   }
 
   if (offset % memoryRequirements.alignment != 0) {
-    Logger::error("Offset {} is not a multiple of alignment {}", offset,
-                  memoryRequirements.alignment);
+    Logger::error("Can't bind buffer at offset {} as is not a multiple of the "
+                  "buffer alignment ({})",
+                  offset, memoryRequirements.alignment);
     return BindError::AlignmentMismatch;
   }
 #endif
+  Logger::debug("Binding {} of size {} with offset {}. Alignment: {}",
+                bufferTypeName(), m_size, offset, memoryRequirements.alignment);
 
   auto res = vkBindBufferMemory(m_device, m_handle, memory, offset);
 
@@ -69,15 +76,16 @@ auto Buffer::canMap() const -> bool {
   return isBound() && m_memory.value().memory.value().mappable();
 }
 
-auto IndexBuffer::create(Device &device,
-                         vk::info::IndexBufferCreate &createInfo)
+auto IndexBuffer::create(Device &device, info::IndexBufferCreate &createInfo,
+                         enums::IndexType indexType)
     -> std::optional<IndexBuffer> {
   VkBuffer buffer;
   if (vkCreateBuffer(*device, &createInfo, nullptr, &buffer) != VK_SUCCESS) {
     return std::nullopt;
   }
 
-  return IndexBuffer(buffer, device, Size(createInfo.size), createInfo.usage);
+  return IndexBuffer(buffer, device, Size(createInfo.size), createInfo.usage,
+                     indexType);
 }
 
 auto UniformBuffer::create(Device &device,

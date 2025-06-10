@@ -92,11 +92,10 @@ void Encoder::RenderPass::bindVertexBuffer(uint32_t binding,
 }
 
 void Encoder::RenderPass::bindIndexBuffer(IndexBuffer &buffer,
-                                          VkDeviceSize offset,
-                                          VkIndexType indexType) {
+                                          VkDeviceSize offset) {
   if (!*this)
     return;
-  vkCmdBindIndexBuffer(getCmd(), *buffer, offset, indexType);
+  vkCmdBindIndexBuffer(getCmd(), *buffer, offset, buffer.indexType());
 }
 
 void Encoder::RenderPass::bindDescriptorSet(

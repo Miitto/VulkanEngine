@@ -25,6 +25,7 @@ public:
 
 template <> struct fmt::formatter<vk::Size> : fmt::formatter<int> {
   auto format(vk::Size my, format_context &ctx) const -> decltype(ctx.out()) {
-    return fmt::format_to(ctx.out(), "{}", static_cast<vk::DeviceSize>(my));
+    return fmt::format_to(ctx.out(), "Size({})",
+                          static_cast<vk::DeviceSize>(my));
   }
 };

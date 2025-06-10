@@ -69,9 +69,10 @@ auto Device::createVertexBuffer(vk::info::VertexBufferCreate &info)
   return VertexBuffer::create(*this, info);
 }
 
-auto Device::createIndexBuffer(vk::info::IndexBufferCreate &info)
+auto Device::createIndexBuffer(vk::info::IndexBufferCreate &info,
+                               enums::IndexType indexType)
     -> std::optional<IndexBuffer> {
-  return IndexBuffer::create(*this, info);
+  return IndexBuffer::create(*this, info, indexType);
 }
 
 auto Device::createUniformBuffer(vk::info::UniformBufferCreate &info)
