@@ -80,6 +80,12 @@ public:
   RawRefable(const RawRefable &) = delete;
   auto operator=(const RawRefable &) -> RawRefable & = delete;
 
+  auto copy() -> RawRefable {
+    RawRefable copy;
+    copy.m_ref = m_ref;
+    return copy;
+  }
+
   RawRefable(RawRefable &&o) noexcept : m_ref(o.m_ref) {
     m_ref.set(static_cast<T *>(this));
   }

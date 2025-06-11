@@ -5,11 +5,12 @@
 #include "ref.hpp"
 #include "size.hpp"
 
-#include "enums/buffer-usage-flags.hpp"
+#include "enums/buffer-usage.hpp"
 #include "enums/index-type.hpp"
 #include "enums/sharing-mode.hpp"
 
 #include <optional>
+#include <utility>
 #include <vulkan/vulkan_core.h>
 
 namespace vk {
@@ -77,7 +78,7 @@ public:
   }
 
   VertexBufferCreate(
-      Size size, enums::BufferUsage additionalUsage = 0,
+      Size size, enums::BufferUsage additionalUsage = enums::BufferUsage::None,
       enums::SharingMode sharingMode = enums::SharingMode::Exclusive)
       : BufferCreate(size, enums::BufferUsage::Vertex | additionalUsage,
                      sharingMode) {}
@@ -89,7 +90,7 @@ public:
   }
 
   IndexBufferCreate(
-      Size size, enums::BufferUsage additionalUsage = 0,
+      Size size, enums::BufferUsage additionalUsage = enums::BufferUsage::None,
       enums::SharingMode sharingMode = enums::SharingMode::Exclusive)
       : BufferCreate(size, enums::BufferUsage::Index | additionalUsage,
                      sharingMode) {}
@@ -102,9 +103,9 @@ public:
   }
 
   UniformBufferCreate(
-      Size size, enums::BufferUsage additionalUsage = 0,
+      Size size, enums::BufferUsage additionalUsage = enums::BufferUsage::None,
       enums::SharingMode sharingMode = enums::SharingMode::Exclusive)
-      : BufferCreate(size, VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT | additionalUsage,
+      : BufferCreate(size, enums::BufferUsage::Uniform | additionalUsage,
                      sharingMode) {}
 };
 
@@ -244,5 +245,6 @@ struct fmt::formatter<vk::Buffer::BindError> : fmt::formatter<const char *> {
       return fmt::format_to(ctx.out(),
                             "vk::Buffer::BindError::AlignmentMismatch");
     }
+    std::unreachable();
   }
 };

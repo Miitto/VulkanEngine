@@ -80,8 +80,7 @@ auto Device::createUniformBuffer(vk::info::UniformBufferCreate &info)
   return UniformBuffer::create(*this, info);
 }
 
-auto Device::allocateMemory(Buffer &buffer,
-                            enums::MemoryPropertyFlags properties)
+auto Device::allocateMemory(Buffer &buffer, enums::MemoryProperties properties)
     -> std::optional<DeviceMemory> {
   auto memoryReqs = buffer.getMemoryRequirements();
 
@@ -89,7 +88,7 @@ auto Device::allocateMemory(Buffer &buffer,
 }
 
 auto Device::allocateMemory(std::span<Buffer *> buffers,
-                            enums::MemoryPropertyFlags properties)
+                            enums::MemoryProperties properties)
     -> std::optional<DeviceMemory> {
   if (buffers.empty()) {
     return std::nullopt;
@@ -110,7 +109,7 @@ auto Device::allocateMemory(std::span<Buffer *> buffers,
 }
 
 auto Device::allocateMemory(MemoryRequirements reqs,
-                            enums::MemoryPropertyFlags properties)
+                            enums::MemoryProperties properties)
     -> std::optional<DeviceMemory> {
   auto memoryType =
       m_physicalDevice.findMemoryType(reqs.memoryTypeBits, properties);

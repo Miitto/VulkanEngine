@@ -204,8 +204,8 @@ public:
       auto &stagingBuffer = stagingBuf_opt.value();
 
       auto stagingMemory_opt = device.allocateMemory(
-          stagingBuffer, enums::MemoryPropertyFlags::HostVisible |
-                             enums::MemoryPropertyFlags::HostCoherent);
+          stagingBuffer, enums::MemoryProperties::HostVisible |
+                             enums::MemoryProperties::HostCoherent);
       if (!stagingMemory_opt.has_value()) {
         Logger::error("Failed to allocate staging buffer memory");
         return std::nullopt;
@@ -257,7 +257,7 @@ private:
 
 public:
   CommandBuffer(const CommandBuffer &o)
-      : Handle(o.m_handle), encoder(o.encoder) {}
+      : Handle(o.m_handle), RawRefable(), encoder(o.encoder) {}
   CommandBuffer(VkCommandBuffer commandBuffer) : Handle(commandBuffer) {}
 
   auto begin() -> Encoder;

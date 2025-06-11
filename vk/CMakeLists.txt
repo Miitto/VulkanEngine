@@ -8,6 +8,8 @@ target_sources(vk PUBLIC
   device/memory.cpp
   device/physical.cpp
 
+  enums/buffer-usage.cpp
+
   khr/surface.cpp
   khr/swapchain.cpp
 

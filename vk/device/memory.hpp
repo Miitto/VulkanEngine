@@ -7,7 +7,7 @@
 #include "size.hpp"
 
 #include "device/physical.hpp"
-#include "enums/memory-map-flags.hpp"
+#include "enums/memory-map.hpp"
 
 #include "vulkan/vulkan_core.h"
 #include <optional>
@@ -63,7 +63,8 @@ public:
   auto operator=(Mapping &&o) -> Mapping = delete;
 
   static auto map(Device &device, DeviceMemory &memory, Size size,
-                  Offset offset = Offset(0), enums::MemoryMapFlags flags = 0)
+                  Offset offset = Offset(0),
+                  enums::MemoryMap flags = enums::MemoryMap::None)
       -> std::optional<Mapping>;
 
   operator bool() const;
@@ -180,7 +181,8 @@ public:
             VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT) != 0;
   }
   auto map(Size size = Size(VK_WHOLE_SIZE), Offset offset = Offset(0),
-           enums::MemoryMapFlags flags = 0) -> std::optional<Mapping>;
+           enums::MemoryMap flags = enums::MemoryMap::None)
+      -> std::optional<Mapping>;
 
   [[nodiscard]] auto getSize() const -> Size { return m_size; }
 };

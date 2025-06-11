@@ -240,15 +240,15 @@ public:
   auto createUniformBuffer(vk::info::UniformBufferCreate &info)
       -> std::optional<UniformBuffer>;
 
-  auto allocateMemory(Buffer &buffer, enums::MemoryPropertyFlags properties)
+  auto allocateMemory(Buffer &buffer, enums::MemoryProperties properties)
       -> std::optional<DeviceMemory>;
 
   auto allocateMemory(std::span<Buffer *> buffers,
-                      enums::MemoryPropertyFlags properties)
+                      enums::MemoryProperties properties)
       -> std::optional<DeviceMemory>;
 
   auto allocateMemory(MemoryRequirements memReqs,
-                      enums::MemoryPropertyFlags porperties)
+                      enums::MemoryProperties porperties)
       -> std::optional<DeviceMemory>;
 
   void bindBufferMemory(Buffer &buffer, DeviceMemory &memory,

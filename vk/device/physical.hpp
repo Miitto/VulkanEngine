@@ -1,6 +1,6 @@
 #pragma once
 
-#include "enums/memory-property-flags.hpp"
+#include "enums/memory-properties.hpp"
 #include "instance.hpp"
 
 #include <optional>
@@ -68,7 +68,7 @@ public:
   supportsExtensions(const std::vector<char const *> &extensions) const -> bool;
 
   [[nodiscard]] auto findMemoryType(uint32_t typeFilter,
-                                    enums::MemoryPropertyFlags properties) const
+                                    enums::MemoryProperties properties) const
       -> std::optional<DeviceMemoryProperties>;
 
   auto isDiscrete() -> bool {
