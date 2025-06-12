@@ -64,7 +64,7 @@ public:
 
   static auto map(Device &device, DeviceMemory &memory, Size size,
                   Offset offset = Offset(0),
-                  enums::MemoryMap flags = enums::MemoryMap::None)
+                  MemoryMapFlags flags = MemoryMapFlags::None)
       -> std::optional<Mapping>;
 
   operator bool() const;
@@ -181,7 +181,7 @@ public:
             VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT) != 0;
   }
   auto map(Size size = Size(VK_WHOLE_SIZE), Offset offset = Offset(0),
-           enums::MemoryMap flags = enums::MemoryMap::None)
+           MemoryMapFlags flags = MemoryMapFlags::None)
       -> std::optional<Mapping>;
 
   [[nodiscard]] auto getSize() const -> Size { return m_size; }

@@ -68,7 +68,7 @@ public:
   supportsExtensions(const std::vector<char const *> &extensions) const -> bool;
 
   [[nodiscard]] auto findMemoryType(uint32_t typeFilter,
-                                    enums::MemoryProperties properties) const
+                                    MemoryProperties properties) const
       -> std::optional<DeviceMemoryProperties>;
 
   auto isDiscrete() -> bool {

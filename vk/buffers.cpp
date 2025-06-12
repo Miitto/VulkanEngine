@@ -77,8 +77,7 @@ auto Buffer::canMap() const -> bool {
 }
 
 auto IndexBuffer::create(Device &device, info::IndexBufferCreate &createInfo,
-                         enums::IndexType indexType)
-    -> std::optional<IndexBuffer> {
+                         IndexType indexType) -> std::optional<IndexBuffer> {
   VkBuffer buffer;
   if (vkCreateBuffer(*device, &createInfo, nullptr, &buffer) != VK_SUCCESS) {
     return std::nullopt;

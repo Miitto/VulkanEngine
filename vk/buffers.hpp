@@ -62,8 +62,8 @@ public:
                            .sharingMode = VK_SHARING_MODE_EXCLUSIVE,
                            .queueFamilyIndexCount = 0,
                            .pQueueFamilyIndices = nullptr} {}
-  BufferCreate(Size size, enums::BufferUsage usage,
-               enums::SharingMode sharingMode = enums::SharingMode::Exclusive)
+  BufferCreate(Size size, BufferUsage usage,
+               SharingMode sharingMode = SharingMode::Exclusive)
       : BufferCreate() {
     this->usage = usage;
     this->size = size;
@@ -77,10 +77,9 @@ public:
     usage = VK_BUFFER_USAGE_VERTEX_BUFFER_BIT;
   }
 
-  VertexBufferCreate(
-      Size size, enums::BufferUsage additionalUsage = enums::BufferUsage::None,
-      enums::SharingMode sharingMode = enums::SharingMode::Exclusive)
-      : BufferCreate(size, enums::BufferUsage::Vertex | additionalUsage,
+  VertexBufferCreate(Size size, BufferUsage additionalUsage = BufferUsage::None,
+                     SharingMode sharingMode = SharingMode::Exclusive)
+      : BufferCreate(size, BufferUsage::VertexBuffer | additionalUsage,
                      sharingMode) {}
 };
 class IndexBufferCreate : public BufferCreate {
@@ -89,10 +88,9 @@ public:
     usage = VK_BUFFER_USAGE_INDEX_BUFFER_BIT;
   }
 
-  IndexBufferCreate(
-      Size size, enums::BufferUsage additionalUsage = enums::BufferUsage::None,
-      enums::SharingMode sharingMode = enums::SharingMode::Exclusive)
-      : BufferCreate(size, enums::BufferUsage::Index | additionalUsage,
+  IndexBufferCreate(Size size, BufferUsage additionalUsage = BufferUsage::None,
+                    SharingMode sharingMode = SharingMode::Exclusive)
+      : BufferCreate(size, BufferUsage::IndexBuffer | additionalUsage,
                      sharingMode) {}
 };
 
@@ -102,10 +100,10 @@ public:
     usage = VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT;
   }
 
-  UniformBufferCreate(
-      Size size, enums::BufferUsage additionalUsage = enums::BufferUsage::None,
-      enums::SharingMode sharingMode = enums::SharingMode::Exclusive)
-      : BufferCreate(size, enums::BufferUsage::Uniform | additionalUsage,
+  UniformBufferCreate(Size size,
+                      BufferUsage additionalUsage = BufferUsage::None,
+                      SharingMode sharingMode = SharingMode::Exclusive)
+      : BufferCreate(size, BufferUsage::UniformBuffer | additionalUsage,
                      sharingMode) {}
 };
 
@@ -170,10 +168,10 @@ public:
 };
 
 class IndexBuffer : public Buffer {
-  enums::IndexType m_indexType;
+  IndexType m_indexType;
 
   IndexBuffer(VkBuffer buffer, Device &device, Size size,
-              VkBufferUsageFlags usage, enums::IndexType indexType) noexcept
+              VkBufferUsageFlags usage, IndexType indexType) noexcept
       : Buffer(buffer, device, size, usage), m_indexType(indexType) {}
 
 public:
@@ -181,14 +179,12 @@ public:
       : Buffer(std::move(o)), m_indexType(o.m_indexType) {}
 
   static auto create(Device &device, info::IndexBufferCreate &createInfo,
-                     enums::IndexType indexType) -> std::optional<IndexBuffer>;
+                     IndexType indexType) -> std::optional<IndexBuffer>;
   [[nodiscard]] constexpr auto bufferTypeName() const -> const char * override {
     return "IndexBuffer";
   }
 
-  [[nodiscard]] auto indexType() const -> enums::IndexType {
-    return m_indexType;
-  };
+  [[nodiscard]] auto indexType() const -> IndexType { return m_indexType; };
 };
 
 class UniformBuffer : public Buffer {

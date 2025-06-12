@@ -12,10 +12,8 @@ class Size {
   DeviceSize m_size;
 
 public:
-  explicit Size(DeviceSize size = 0) noexcept : m_size(size) {}
+  explicit Size(uint64_t size = 0) noexcept : m_size(size) {}
   explicit Size(uint32_t size) noexcept
-      : m_size(static_cast<DeviceSize>(size)) {}
-  explicit Size(long long unsigned int size) noexcept
       : m_size(static_cast<DeviceSize>(size)) {}
   explicit Size(int size) noexcept : m_size(static_cast<DeviceSize>(size)) {}
   operator DeviceSize() const noexcept { return m_size; }

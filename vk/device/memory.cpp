@@ -80,7 +80,7 @@ auto DeviceMemory::destroy() -> void {
 }
 
 auto Mapping::map(Device &device, DeviceMemory &memory, Size size,
-                  Offset offset, enums::MemoryMap flags)
+                  Offset offset, MemoryMapFlags flags)
     -> std::optional<Mapping> {
   auto activeMapping = memory.activeMapping();
   if (activeMapping.has_value()) {
@@ -104,7 +104,7 @@ Mapping::~Mapping() {
   }
 }
 
-auto DeviceMemory::map(Size size, Offset offset, enums::MemoryMap flags)
+auto DeviceMemory::map(Size size, Offset offset, MemoryMapFlags flags)
     -> std::optional<Mapping> {
   if (!m_handle) {
     Logger::error("Memory is not valid.");

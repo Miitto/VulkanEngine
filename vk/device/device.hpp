@@ -234,21 +234,18 @@ public:
   auto createBuffer(vk::info::BufferCreate &info) -> std::optional<Buffer>;
   auto createVertexBuffer(vk::info::VertexBufferCreate &info)
       -> std::optional<VertexBuffer>;
-  auto createIndexBuffer(vk::info::IndexBufferCreate &info,
-                         enums::IndexType indexType)
+  auto createIndexBuffer(vk::info::IndexBufferCreate &info, IndexType indexType)
       -> std::optional<IndexBuffer>;
   auto createUniformBuffer(vk::info::UniformBufferCreate &info)
       -> std::optional<UniformBuffer>;
 
-  auto allocateMemory(Buffer &buffer, enums::MemoryProperties properties)
+  auto allocateMemory(Buffer &buffer, MemoryProperties properties)
       -> std::optional<DeviceMemory>;
 
-  auto allocateMemory(std::span<Buffer *> buffers,
-                      enums::MemoryProperties properties)
+  auto allocateMemory(std::span<Buffer *> buffers, MemoryProperties properties)
       -> std::optional<DeviceMemory>;
 
-  auto allocateMemory(MemoryRequirements memReqs,
-                      enums::MemoryProperties porperties)
+  auto allocateMemory(MemoryRequirements memReqs, MemoryProperties porperties)
       -> std::optional<DeviceMemory>;
 
   void bindBufferMemory(Buffer &buffer, DeviceMemory &memory,
