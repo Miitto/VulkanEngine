@@ -107,7 +107,7 @@ auto PhysicalDevice::supportsExtensions(
 }
 
 auto PhysicalDevice::findMemoryType(uint32_t typeFilter,
-                                    enums::MemoryProperties properties) const
+                                    MemoryProperties properties) const
     -> std::optional<DeviceMemoryProperties> {
   VkPhysicalDeviceMemoryProperties memProperties = getMemoryProperties();
 

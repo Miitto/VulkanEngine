@@ -26,7 +26,7 @@ Swapchain::Swapchain(VkSwapchainKHR swapchain, Device &device,
                      std::vector<Image> &images,
                      std::vector<ImageView> &imageViews,
                      std::vector<Semaphore> &semaphores, Extent2D extent,
-                     enums::Format format)
+                     Format format)
     : Handle(swapchain), m_device(device.ref()), m_images(std::move(images)),
       m_imageViews(std::move(imageViews)),
       m_imageSemaphores(std::move(semaphores)), m_extent(extent),

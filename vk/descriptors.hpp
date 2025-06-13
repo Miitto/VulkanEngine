@@ -13,13 +13,15 @@ namespace vk {
 class Device;
 class Buffer;
 class UniformBuffer;
+class DescriptorType;
+class ShaderStageFlags;
 } // namespace vk
 
 namespace vk {
 class DescriptorSetLayoutBinding : public VkDescriptorSetLayoutBinding {
 public:
-  DescriptorSetLayoutBinding(uint32_t binding, VkDescriptorType type,
-                             VkShaderStageFlags stageFlags, uint32_t count = 1);
+  DescriptorSetLayoutBinding(uint32_t binding, DescriptorType type,
+                             ShaderStageFlags stageFlags, uint32_t count = 1);
   DescriptorSetLayoutBinding(VkDescriptorSetLayoutBinding &&other);
 };
 
@@ -70,7 +72,6 @@ public:
   auto device() -> RawRef<Device, VkDevice> { return m_device; }
 };
 
-namespace enums {
 class DescriptorType {
 public:
   enum Values : uint32_t {
@@ -101,18 +102,17 @@ public:
 
   operator Values() const { return value; }
 };
-} // namespace enums
 
 class DescriptorPoolSize : public VkDescriptorPoolSize {
 public:
-  DescriptorPoolSize(enums::DescriptorType type, uint32_t count);
+  DescriptorPoolSize(DescriptorType type, uint32_t count);
 
   inline DescriptorPoolSize &setCount(uint32_t count) {
     descriptorCount = count;
     return *this;
   }
 
-  inline DescriptorPoolSize &setType(enums::DescriptorType t) {
+  inline DescriptorPoolSize &setType(DescriptorType t) {
     this->type = t;
     return *this;
   }

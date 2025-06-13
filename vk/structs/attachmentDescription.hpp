@@ -8,7 +8,7 @@ namespace vk {
 
 class AttachmentDescription : public VkAttachmentDescription {
 public:
-  AttachmentDescription(enums::Format &format)
+  AttachmentDescription(Format &format)
       : VkAttachmentDescription{
             .flags = 0,
             .format = format,

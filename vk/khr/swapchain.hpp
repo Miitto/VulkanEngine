@@ -77,7 +77,7 @@ public:
     return *this;
   }
 
-  auto setImageFormat(enums::Format format) -> SwapchainCreate & {
+  auto setImageFormat(Format format) -> SwapchainCreate & {
     for (const auto &availableFormat : swapChainSupport.formats) {
       if (availableFormat.format == format) {
         imageFormat = format;
@@ -137,8 +137,7 @@ public:
 
   auto setOldSwapchain(khr::Swapchain &swapchain) -> SwapchainCreate &;
 
-  auto setImageSharingMode(enums::SharingMode sharingMode)
-      -> SwapchainCreate & {
+  auto setImageSharingMode(SharingMode sharingMode) -> SwapchainCreate & {
     imageSharingMode = sharingMode;
     return *this;
   }
@@ -186,13 +185,13 @@ class Swapchain : public Handle<VkSwapchainKHR> {
   std::vector<ImageView> m_imageViews;
   std::vector<Semaphore> m_imageSemaphores;
   Extent2D m_extent;
-  enums::Format m_format;
+  Format m_format;
 
 public:
   Swapchain(VkSwapchainKHR swapchain, Device &device,
             std::vector<Image> &images, std::vector<ImageView> &imageViews,
             std::vector<Semaphore> &inUseSemaphores, Extent2D extent,
-            enums::Format format);
+            Format format);
 
   auto destroy() -> void override;
 
@@ -205,7 +204,7 @@ public:
   static auto create(Device &device, vk::info::SwapchainCreate info)
       -> std::optional<Swapchain>;
   auto getExtent() -> Extent2D & { return m_extent; }
-  auto getFormat() -> enums::Format & { return m_format; }
+  auto getFormat() -> Format & { return m_format; }
 
   auto createFramebuffers(RenderPass &renderPass)
       -> std::optional<std::vector<Framebuffer>>;

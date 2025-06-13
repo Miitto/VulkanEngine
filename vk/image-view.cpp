@@ -12,7 +12,7 @@
 namespace vk {
 
 namespace info {
-ImageViewCreate::ImageViewCreate(Image &image, enums::Format format)
+ImageViewCreate::ImageViewCreate(Image &image, Format format)
     : VkImageViewCreateInfo{
           .sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO,
           .pNext = nullptr,

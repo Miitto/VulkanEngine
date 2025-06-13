@@ -4,6 +4,7 @@
 
 #include "buffers.hpp"
 #include "device/device.hpp"
+#include "enums/shader-stage.hpp"
 
 #include <optional>
 #include <span>
@@ -14,7 +15,7 @@ namespace vk {
 // Region Layouts
 
 DescriptorSetLayoutBinding::DescriptorSetLayoutBinding(
-    uint32_t binding, VkDescriptorType type, VkShaderStageFlags stageFlags,
+    uint32_t binding, DescriptorType type, ShaderStageFlags stageFlags,
     uint32_t count)
     : VkDescriptorSetLayoutBinding{.binding = binding,
                                    .descriptorType = type,
@@ -78,8 +79,7 @@ DescriptorSetLayout::create(Device &device,
 
 // Region Pool
 
-DescriptorPoolSize::DescriptorPoolSize(enums::DescriptorType type,
-                                       uint32_t count)
+DescriptorPoolSize::DescriptorPoolSize(DescriptorType type, uint32_t count)
     : VkDescriptorPoolSize{.type = type, .descriptorCount = count} {}
 
 namespace info {

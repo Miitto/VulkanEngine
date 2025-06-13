@@ -9,16 +9,14 @@ namespace vk {
 class Device;
 class Image;
 
-namespace enums {
 class Format;
-}
 } // namespace vk
 
 namespace vk {
 namespace info {
 class ImageViewCreate : public VkImageViewCreateInfo {
 public:
-  ImageViewCreate(Image &image, enums::Format format);
+  ImageViewCreate(Image &image, Format format);
 
   auto setImage(VkImage img) -> ImageViewCreate & {
     image = img;

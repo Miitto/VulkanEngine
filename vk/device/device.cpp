@@ -70,7 +70,7 @@ auto Device::createVertexBuffer(vk::info::VertexBufferCreate &info)
 }
 
 auto Device::createIndexBuffer(vk::info::IndexBufferCreate &info,
-                               enums::IndexType indexType)
+                               IndexType indexType)
     -> std::optional<IndexBuffer> {
   return IndexBuffer::create(*this, info, indexType);
 }
@@ -80,7 +80,7 @@ auto Device::createUniformBuffer(vk::info::UniformBufferCreate &info)
   return UniformBuffer::create(*this, info);
 }
 
-auto Device::allocateMemory(Buffer &buffer, enums::MemoryProperties properties)
+auto Device::allocateMemory(Buffer &buffer, MemoryProperties properties)
     -> std::optional<DeviceMemory> {
   auto memoryReqs = buffer.getMemoryRequirements();
 
@@ -88,7 +88,7 @@ auto Device::allocateMemory(Buffer &buffer, enums::MemoryProperties properties)
 }
 
 auto Device::allocateMemory(std::span<Buffer *> buffers,
-                            enums::MemoryProperties properties)
+                            MemoryProperties properties)
     -> std::optional<DeviceMemory> {
   if (buffers.empty()) {
     return std::nullopt;
@@ -109,7 +109,7 @@ auto Device::allocateMemory(std::span<Buffer *> buffers,
 }
 
 auto Device::allocateMemory(MemoryRequirements reqs,
-                            enums::MemoryProperties properties)
+                            MemoryProperties properties)
     -> std::optional<DeviceMemory> {
   auto memoryType =
       m_physicalDevice.findMemoryType(reqs.memoryTypeBits, properties);

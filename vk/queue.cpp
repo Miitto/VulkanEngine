@@ -11,20 +11,20 @@
 
 namespace vk {
 auto Queue::submit(vk::info::Submit &submitInfo, std::optional<Fence *> fence)
-    -> std::optional<enums::SubmitError> {
+    -> std::optional<errors::Submit> {
 
   VkFence vkFence = fence.has_value() ? **fence : VK_NULL_HANDLE;
 
   VkResult res = vkQueueSubmit(m_handle, 1, &submitInfo, vkFence);
   if (res != VK_SUCCESS) {
-    return std::bit_cast<enums::SubmitError>(res);
+    return std::bit_cast<errors::Submit>(res);
   }
   return std::nullopt;
 }
 
 auto Queue::submit(std::span<vk::info::Submit> &submitInfos,
                    std::optional<Fence *> fence)
-    -> std::optional<enums::SubmitError> {
+    -> std::optional<errors::Submit> {
   if (submitInfos.empty()) {
     return std::nullopt;
   }
@@ -40,14 +40,14 @@ auto Queue::submit(std::span<vk::info::Submit> &submitInfos,
       vkQueueSubmit(m_handle, static_cast<uint32_t>(vkSubmitInfos.size()),
                     vkSubmitInfos.data(), vkFence);
   if (res != VK_SUCCESS) {
-    return std::bit_cast<enums::SubmitError>(res);
+    return std::bit_cast<errors::Submit>(res);
   }
 
   return std::nullopt;
 }
 
 auto Queue::submit(CommandBuffer &cmdBuffer, std::optional<Fence *> fence)
-    -> std::optional<enums::SubmitError> {
+    -> std::optional<errors::Submit> {
   vk::info::Submit submitInfo;
   submitInfo.addCommandBuffer(cmdBuffer);
   return submit(submitInfo, fence);

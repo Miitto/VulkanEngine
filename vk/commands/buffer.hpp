@@ -195,7 +195,7 @@ public:
       auto &device = *dst.getDevice();
 
       auto stagingBufInfo =
-          info::BufferCreate(Size(size), enums::BufferUsage::TransferSrc);
+          info::BufferCreate(Size(size), BufferUsage::TransferSrc);
       auto stagingBuf_opt = device.createBuffer(stagingBufInfo);
       if (!stagingBuf_opt.has_value()) {
         Logger::error("Failed to create staging buffer");
@@ -204,8 +204,8 @@ public:
       auto &stagingBuffer = stagingBuf_opt.value();
 
       auto stagingMemory_opt = device.allocateMemory(
-          stagingBuffer, enums::MemoryProperties::HostVisible |
-                             enums::MemoryProperties::HostCoherent);
+          stagingBuffer,
+          MemoryProperties::HostVisible | MemoryProperties::HostCoherent);
       if (!stagingMemory_opt.has_value()) {
         Logger::error("Failed to allocate staging buffer memory");
         return std::nullopt;

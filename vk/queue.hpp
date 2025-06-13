@@ -160,8 +160,8 @@ public:
 
 } // namespace info
 
-namespace enums {
-class SubmitError {
+namespace errors {
+class Submit {
 public:
   enum Values {
     OutOfHostMemory = VK_ERROR_OUT_OF_HOST_MEMORY,
@@ -173,12 +173,12 @@ private:
   Values value;
 
 public:
-  SubmitError(Values value) : value(value) {}
+  Submit(Values value) : value(value) {}
   operator VkResult() const { return std::bit_cast<VkResult>(value); }
 };
 
-using QueueWaitError = SubmitError;
-} // namespace enums
+using QueueWait = Submit;
+} // namespace errors
 
 class Queue : public Handle<VkQueue> {
 protected:
@@ -192,20 +192,20 @@ public:
 
   auto submit(vk::info::Submit &submitInfo,
               std::optional<Fence *> fence = std::nullopt)
-      -> std::optional<enums::SubmitError>;
+      -> std::optional<errors::Submit>;
 
   auto submit(std::span<vk::info::Submit> &submitInfo,
               std::optional<Fence *> fence = std::nullopt)
-      -> std::optional<enums::SubmitError>;
+      -> std::optional<errors::Submit>;
 
   auto submit(CommandBuffer &cmdBuffer,
               std::optional<Fence *> fence = std::nullopt)
-      -> std::optional<enums::SubmitError>;
+      -> std::optional<errors::Submit>;
 
-  auto waitIdle() -> std::optional<enums::QueueWaitError> {
+  auto waitIdle() -> std::optional<errors::QueueWait> {
     auto res = vkQueueWaitIdle(m_handle);
     if (res != VK_SUCCESS) {
-      return std::bit_cast<enums::QueueWaitError>(res);
+      return std::bit_cast<errors::QueueWait>(res);
     }
     return std::nullopt;
   }
